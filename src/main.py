@@ -125,15 +125,14 @@ def pep(session):
         dt_status = soup.find(string='Status').find_parent('dt')
         status_page = dt_status.find_next_sibling().string
 
-        if status_page in status_arr:
+        if status_page in status_arr and status_page in EXPECTED_STATUS:
             EXPECTED_STATUS[status_page] += 1
         else:
             logging.info(info_pep(url_pep, status_page, status_arr))
 
     results = [('Статус', 'Колличество')]
-    for key, value in EXPECTED_STATUS.items():
-        results.append((key, str(value)))
-    results.append(('Total', str(sum(EXPECTED_STATUS.values()))))
+    results.extend(EXPECTED_STATUS.items())
+    results.append(('Total', sum(EXPECTED_STATUS.values())))
 
     downloads_dir = BASE_DIR / 'results'
     downloads_dir.mkdir(exist_ok=True)
